@@ -1,228 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SafePlay — Game Launchers Fixed</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAFEPLAY</title>
 
 <style>
-:root {
-  --bg: #050505;
-  --card: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
-
-  --p: #8b5cf6;
-  --s: #06b6d4;
-  --g: #10b981;
-  --r: #dc2626;
-
-  --txt: #fff;
-  --muted: rgba(255,255,255,0.65);
-  --faint: rgba(255,255,255,0.45);
-
-  --rad-sm: 12px;
-  --rad-md: 18px;
-  --rad-lg: 28px;
-
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+:root{
+  --bg:#050505;
+  --card:rgba(255,255,255,.05);
+  --border:rgba(255,255,255,.12);
+  --purple:#8b5cf6;
+  --cyan:#06b6d4;
+  --green:#10b981;
+  --red:#dc2626;
+  --text:#fff;
+  --muted:rgba(255,255,255,.65);
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-body {
-  font-family: Inter, -apple-system, sans-serif;
+body{
+  font-family:Inter,system-ui,-apple-system,sans-serif;
   background:
-    radial-gradient(900px 400px at 50% -10%, rgba(139,92,246,.12), transparent),
+    radial-gradient(900px 500px at 50% -10%, rgba(139,92,246,.12), transparent),
     var(--bg);
-  color: var(--txt);
-  overflow-x: hidden;
+  color:var(--text);
+  overflow-x:hidden;
 }
 
-/* INTRO */
-.skip {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 2000;
-  padding: 10px 20px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.05);
-  color: var(--txt);
-  cursor: pointer;
+/* ---------- INTRO ---------- */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  background:#000;
+  overflow:hidden;
 }
 
-.chaos {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 1000;
+.popup{
+  position:absolute;
+  width:300px;
+  background:#0c0c0c;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 40px 120px rgba(0,0,0,.9);
+  opacity:0;
+  animation:float 7s ease-in-out infinite;
 }
 
-.popup {
-  position: absolute;
-  width: 320px;
-  background: #111;
-  border-radius: var(--rad-md);
-  border: 1px solid var(--border);
-  box-shadow: 0 30px 80px rgba(0,0,0,.7);
-  animation: float 4s ease-in-out infinite;
+.popup h4{
+  padding:14px 18px;
+  font-size:14px;
+  background:linear-gradient(135deg,var(--red),#7f1d1d);
+  border-radius:16px 16px 0 0;
 }
 
-@keyframes float {
-  50% { transform: translateY(-10px); }
+.popup p{
+  padding:18px;
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
 }
 
-.popup h4 {
-  background: linear-gradient(135deg, var(--r), #7f1d1d);
-  padding: 14px 18px;
-  border-radius: var(--rad-md) var(--rad-md) 0 0;
+@keyframes float{
+  50%{transform:translateY(-14px)}
 }
 
-.popup p {
-  padding: 20px;
-  color: var(--muted);
-  text-align: center;
+.popup.show{
+  animation:
+    popupIn .6s var(--ease) forwards,
+    float 7s ease-in-out infinite;
 }
 
-.logo {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 110px;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--p), var(--s));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  opacity: 0;
-  z-index: 1100;
+@keyframes popupIn{
+  from{opacity:0;transform:scale(.92) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
 }
 
-.tagline {
-  position: fixed;
-  top: 62%;
-  width: 100%;
-  text-align: center;
-  font-size: 36px;
-  font-weight: 700;
-  opacity: 0;
-  z-index: 1101;
+/* ---------- LOGO ---------- */
+
+#logo{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-size:120px;
+  font-weight:900;
+  letter-spacing:.08em;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  opacity:0;
+  z-index:1100;
 }
 
-.show {
-  animation: fadeUp 1s var(--ease) forwards;
+#tagline{
+  position:fixed;
+  top:62%;
+  width:100%;
+  text-align:center;
+  font-size:34px;
+  font-weight:700;
+  opacity:0;
+  z-index:1101;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+.fade-in{
+  animation:fadeUp 1s var(--ease) forwards;
 }
 
-/* MAIN */
-main { padding-top: 100vh; }
-
-section {
-  padding: 120px 40px;
-  max-width: 1200px;
-  margin: auto;
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
-h2 {
-  font-size: clamp(42px, 6vw, 64px);
-  font-weight: 900;
-  text-align: center;
-  margin-bottom: 60px;
-  background: linear-gradient(135deg, #fff, var(--p));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* ---------- MAIN ---------- */
+
+main{padding-top:100vh}
+
+section{
+  max-width:1200px;
+  margin:auto;
+  padding:120px 40px;
 }
 
-/* CARDS */
-.grid {
-  display: grid;
-  gap: 24px;
+h2{
+  font-size:clamp(42px,6vw,64px);
+  font-weight:900;
+  text-align:center;
+  margin-bottom:60px;
+  background:linear-gradient(135deg,#fff,var(--purple));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.grid.cols-3 {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+/* ---------- CARDS ---------- */
+
+.grid{
+  display:grid;
+  gap:26px;
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--rad-lg);
-  padding: 36px;
-  transition: transform .4s var(--ease), box-shadow .4s;
+.cols-3{
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 40px 100px rgba(139,92,246,.25);
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:36px;
+  transition:transform .4s var(--ease), box-shadow .4s var(--ease);
 }
 
-/* PRICE */
-.price {
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--s);
+.card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 60px 140px rgba(139,92,246,.25);
 }
 
-/* WAITLIST */
-.waitlist {
-  text-align: center;
+.price{
+  font-size:36px;
+  font-weight:900;
+  margin-top:12px;
+  color:var(--cyan);
 }
 
-.waitlist p {
-  color: var(--muted);
-  margin-bottom: 40px;
-  font-size: 20px;
+/* ---------- TRUST ---------- */
+
+.trust{
+  text-align:center;
+  font-size:22px;
+  color:var(--muted);
+  line-height:1.6;
 }
 
-.waitlist input {
-  padding: 18px 26px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: white;
-  font-size: 18px;
-  width: 280px;
+/* ---------- WAITLIST ---------- */
+
+.waitlist{
+  text-align:center;
 }
 
-.waitlist button {
-  padding: 18px 40px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg, var(--p), var(--s));
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-left: 12px;
+.waitlist p{
+  font-size:20px;
+  color:var(--muted);
+  margin-bottom:40px;
 }
 
-/* REVEALS */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
+.waitlist input{
+  padding:18px 26px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:#fff;
+  font-size:18px;
+  width:280px;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all .8s var(--ease);
+
+.waitlist button{
+  padding:18px 42px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  margin-left:12px;
+}
+
+/* ---------- REVEALS ---------- */
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+}
+
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+  transition:all .9s var(--ease);
 }
 </style>
 </head>
 
 <body>
 
-<button class="skip" id="skip">Skip</button>
-<div class="chaos" id="chaos"></div>
-<div class="logo" id="logo">SAFEPLAY</div>
-<div class="tagline" id="tagline">Game Launchers. Fixed.</div>
+<div id="intro"></div>
+<div id="logo">SAFEPLAY</div>
+<div id="tagline">Launch games without risk.</div>
 
 <main>
+
 <section class="reveal">
-  <h2>Game Pages Done Right</h2>
+  <h2>Storefront Chaos</h2>
   <div class="grid cols-3">
     <div class="card">
       <h3>Epic Games</h3>
@@ -240,53 +252,57 @@ h2 {
 </section>
 
 <section class="reveal">
-  <h2>Guaranteed Safety</h2>
-  <div class="card">
-    <p style="text-align:center;font-size:22px;color:var(--muted)">
-      No crypto miners. No malware. Verified installs only.
-    </p>
+  <h2>Security, By Design</h2>
+  <div class="card trust">
+    Every launcher is verified.  
+    No injected installers.  
+    No background miners.  
+    No surprises.
   </div>
 </section>
 
 <section class="waitlist reveal">
   <h2>Early Access</h2>
-  <p>Join the private beta. Limited invites.</p>
-  <form onsubmit="event.preventDefault();alert('You’re in.');">
+  <p>Private beta. Limited invites.</p>
+  <form onsubmit="event.preventDefault();alert('Access requested.');">
     <input type="email" required placeholder="you@email.com">
     <button>Request Access</button>
   </form>
 </section>
+
 </main>
 
 <script>
-const chaos = document.getElementById("chaos");
-const logo = document.getElementById("logo");
-const tagline = document.getElementById("tagline");
-const skip = document.getElementById("skip");
+const intro=document.getElementById("intro");
+const logo=document.getElementById("logo");
+const tagline=document.getElementById("tagline");
 
-["🦠","💸","❌"].forEach((i,n)=>{
+const alerts=[
+  "Unverified launcher detected",
+  "Installer modified",
+  "Background process injected"
+];
+
+alerts.forEach((text,i)=>{
   setTimeout(()=>{
     const p=document.createElement("div");
     p.className="popup";
-    p.style.left=Math.random()*60+"%";
-    p.style.top=Math.random()*60+"%";
-    p.innerHTML=`<h4>Security Alert</h4><p>${i} Unverified launcher detected</p>`;
-    chaos.appendChild(p);
-  },n*400);
+    p.style.left=20+i*18+"%";
+    p.style.top=20+i*14+"%";
+    p.innerHTML=`<h4>Security Alert</h4><p>${text}</p>`;
+    intro.appendChild(p);
+    requestAnimationFrame(()=>p.classList.add("show"));
+  },i*420);
 });
 
-function endIntro(){
-  chaos.remove();
-  logo.classList.add("show");
-  tagline.classList.add("show");
-  skip.remove();
-}
-
-setTimeout(endIntro, 2400);
-skip.onclick=endIntro;
+setTimeout(()=>{
+  intro.remove();
+  logo.classList.add("fade-in");
+  tagline.classList.add("fade-in");
+},2600);
 
 const io=new IntersectionObserver(e=>{
-  e.forEach(x=>x.isIntersecting&&x.target.classList.add("visible"))
+  e.forEach(x=>x.isIntersecting&&x.target.classList.add("visible"));
 },{threshold:.2});
 
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
